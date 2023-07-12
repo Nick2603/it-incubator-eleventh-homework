@@ -1,10 +1,9 @@
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from 'uuid';
-import { usersRepository } from './../repositories/usersRepository';
 import { emailsManager } from "../utils/emailsManager";
-import { usersService } from "./usersService";
 import { IUserViewModel } from '../types/IUser';
 import { ErrorsType } from "../types/ErrorsType";
+import { usersRepository, usersService } from "../compositionRoot";
 
 export const authService = {
   async createUser(login: string, email: string, password: string): Promise<boolean> {

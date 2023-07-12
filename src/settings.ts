@@ -6,7 +6,6 @@ import { blogsRepository } from "./repositories/blogsRepository";
 import { postsRepository } from "./repositories/postsRepository";
 import { CodeResponsesEnum } from "./types/CodeResponsesEnum";
 import { usersRouter } from "./routes/usersRouter";
-import { usersRepository } from "./repositories/usersRepository";
 import { authRouter } from "./routes/authRouter";
 import { commentsRouter } from "./routes/commentsRouter";
 import { commentsRepository } from "./repositories/commentsRepository";
@@ -14,6 +13,7 @@ import cookieParser from "cookie-parser";
 import { sessionsRepository } from "./repositories/sessionsRepository";
 import { devicesRouter } from "./routes/devicesRouter";
 import { recoveryCodesRepository } from "./repositories/recoveryCodesRepository";
+import { usersRepository } from "./compositionRoot";
 
 export const app = express();
 

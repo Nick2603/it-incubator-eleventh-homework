@@ -1,21 +1,23 @@
 import { v4 as uuidv4 } from 'uuid';
 import add from 'date-fns/add';
-import { usersRepository } from "../repositories/usersRepository";
 import { IUserViewModel, IUserDBModel } from "../types/IUser";
 import { authService } from "./authService";
+import { UsersRepository } from '../repositories/usersRepository';
 
-export const usersService = {
+export class UsersService {
+  constructor(protected readonly usersRepository: UsersRepository) {};
+
   async deleteAllUsers(): Promise<void> {
-    await usersRepository.deleteAllUsers();
-  },
+    await this.usersRepository.deleteAllUsers();
+  };
 
   async getUserDBModelById(id: string): Promise<IUserDBModel | null> {
-    return await usersRepository.getUserById(id);
-  },
+    return await this.usersRepository.getUserById(id);
+  };
 
   async getUserByEmailConfirmationCode(code: string): Promise<IUserDBModel | null> {
-    return await usersRepository.getUserByEmailConfirmationCode(code);
-  },
+    return await this.usersRepository.getUserByEmailConfirmationCode(code);
+  };
 
   async createUser(login: string, email: string, password: string, isEmailConfirmed: boolean, returnPassword: boolean | undefined = false, returnCode: boolean | undefined = false): Promise<IUserViewModel & { password?: string; code?: string; }> {
     const passwordHash = await authService.getHashedPassword(password);
@@ -35,7 +37,7 @@ export const usersService = {
       },
     };
 
-    await usersRepository.createUser(newUser);
+    await this.usersRepository.createUser(newUser);
 
     let savedUser: IUserViewModel & { password?: string; code?: string; } = {
       id: newUser.id,
@@ -59,15 +61,15 @@ export const usersService = {
     };
 
     return savedUser;
-  },
+  };
 
   async deleteUser(id: string): Promise<boolean> {
-    return await usersRepository.deleteUser(id);
-  },
+    return await this.usersRepository.deleteUser(id);
+  };
 
   async updateUserPassword(id: string, password: string): Promise<boolean> {
     const passwordHash = await authService.getHashedPassword(password);
 
-    return await usersRepository.updateUserPassword(id, passwordHash);
-  },
+    return await this.usersRepository.updateUserPassword(id, passwordHash);
+  };
 };

@@ -8,12 +8,11 @@ import { emailValidationMiddleware, loginValidationMiddleware, passwordValidatio
 import { authService } from '../domains/authService';
 import { isUniqueEmail } from "../middlewares/isUniqueEmailMiddleware";
 import { isUniqueLogin } from "../middlewares/isUniqueLoginMiddleware";
-import { usersService } from "../domains/usersService";
 import { mapUserDBTypeToViewType } from "../mappers/mapUserDBTypeToViewType";
 import { sessionsService } from "../domains/sessionsService";
 import { createRateLimitingMiddleware } from "../middlewares/rateLimitingMiddleware";
 import { recoveryCodesService } from "../domains/recoveryCodesService";
-import { usersRepository } from "../repositories/usersRepository";
+import { usersRepository, usersService } from "../compositionRoot";
 
 export const authRouter = Router({});
 

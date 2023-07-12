@@ -21,7 +21,7 @@ interface IGetUsersInput {
   pageSize: QueryParamType,
 }
 
-export const usersQueryRepository = {
+export class UsersQueryRepository {
   async getUsers({searchLoginTerm, searchEmailTerm, sortBy = "accountData.createdAt", sortDirection = "desc", pageNumber = "1", pageSize = "10"}: IGetUsersInput): Promise<UsersWithMetaType> {
 
     if (sortBy !== "accountData.createdAt" && sortBy.length) {
@@ -36,8 +36,8 @@ export const usersQueryRepository = {
          { "accountData.login": { $regex: searchLoginTerm, $options: "i" } },
          { "accountData.email": { $regex: searchEmailTerm, $options: "i" } }
        ]
-     }
-    }
+     };
+    };
 
     if (searchLoginTerm && !searchEmailTerm) {
       filter["accountData.login"] = { $regex: searchLoginTerm, $options: "i" };
@@ -57,5 +57,5 @@ export const usersQueryRepository = {
       totalCount,
       items: users.map(mapUserDBTypeToViewType),
     };
-  },
+  };
 };

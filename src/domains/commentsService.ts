@@ -1,5 +1,5 @@
+import { usersRepository } from "../compositionRoot";
 import { commentsRepository } from "../repositories/commentsRepository";
-import { usersRepository } from "../repositories/usersRepository";
 import { IComment } from "../types/IComment";
 
 export const commentsService = {

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { jwtService } from "../application/jwtService";
-import { usersService } from "../domains/usersService";
 import { CodeResponsesEnum } from "../types/CodeResponsesEnum";
 import { IUserDBModel } from "../types/IUser";
+import { usersService } from "../compositionRoot";
 
 export const bearerAuthMiddleware = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.headers.authorization) {
