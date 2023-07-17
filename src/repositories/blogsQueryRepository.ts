@@ -19,7 +19,7 @@ interface IGetBlogsInput {
   pageSize: QueryParamType,
 }
 
-export const blogsQueryRepository = {
+export class BlogsQueryRepository {
   async getBlogs({searchNameTerm, sortBy = "createdAt", sortDirection = "desc", pageNumber = "1", pageSize = "10"}: IGetBlogsInput): Promise<BlogsWithMetaType> {
     const filter: any = {};
     
@@ -37,5 +37,5 @@ export const blogsQueryRepository = {
       totalCount,
       items: blogs,
     }
-  },
+  };
 };

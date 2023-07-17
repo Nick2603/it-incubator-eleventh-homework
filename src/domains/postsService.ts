@@ -1,18 +1,23 @@
-import { blogsRepository } from "../repositories/blogsRepository";
-import { postsRepository } from "../repositories/postsRepository";
+import { BlogsRepository } from "../repositories/blogsRepository";
+import { PostsRepository } from "../repositories/postsRepository";
 import { IPost } from "../types/IPost";
 
-export const postsService = {
+export class PostsService {
+  constructor(
+    protected readonly postsRepository: PostsRepository,
+    protected readonly blogsRepository: BlogsRepository
+    ) {};
+
   async deleteAllPosts(): Promise<void> {
-    await postsRepository.deleteAllPosts();
-  },
+    await this.postsRepository.deleteAllPosts();
+  };
 
   async getPostById(id: string): Promise<IPost | null> {
-    return await postsRepository.getPostById(id);
-  },
+    return await this.postsRepository.getPostById(id);
+  };
 
   async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<IPost> {
-    const blog = await blogsRepository.getBlogById(blogId);
+    const blog = await this.blogsRepository.getBlogById(blogId);
     const newPost: IPost = {
       id: Date.now().toString(),
       title,
@@ -22,7 +27,7 @@ export const postsService = {
       createdAt: new Date().toISOString(),
       blogName: blog!.name,
     };
-    await postsRepository.createPost(newPost);
+    await this.postsRepository.createPost(newPost);
     return {
       id: newPost.id,
       title: newPost.title,
@@ -32,13 +37,13 @@ export const postsService = {
       createdAt: newPost.createdAt,
       blogName: newPost.blogName,
     };
-  },
+  };
 
   async updatePost(id: string, title: string, shortDescription: string, content: string, blogId: string): Promise<boolean> {
-    return await postsRepository.updatePost(id, title, shortDescription, content, blogId);
-  },
+    return await this.postsRepository.updatePost(id, title, shortDescription, content, blogId);
+  };
 
   async deletePost(id: string): Promise<boolean> {
-    return await postsRepository.deletePost(id);
-  },
+    return await this.postsRepository.deletePost(id);
+  };
 };

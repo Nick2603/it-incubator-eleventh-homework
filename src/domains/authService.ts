@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { emailsManager } from "../utils/emailsManager";
 import { IUserViewModel } from '../types/IUser';
 import { ErrorsType } from "../types/ErrorsType";
-import { usersRepository, usersService } from "../compositionRoot";
+import { usersRepository, usersService } from "../composition/compositionRoot";
 
 export const authService = {
   async createUser(login: string, email: string, password: string): Promise<boolean> {
@@ -82,7 +82,6 @@ export const authService = {
     const user = await usersRepository.findByLoginOrEmail(loginOrEmail);
     
     if (!user) return null;
-    // if (!user.emailConfirmation.isConfirmed) return null;
     const comparePasswordsResult = await bcrypt.compare(password, user.accountData.password);
     
     if (!comparePasswordsResult) {

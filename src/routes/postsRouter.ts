@@ -1,15 +1,11 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import { body } from "express-validator";
 import { basicAuthMiddleware } from "../middlewares/basicAuthMiddleware";
 import { isValidBlogId } from "../middlewares/blogIdValidationMiddleware";
 import { inputValidationMiddleware } from "../middlewares/inputValidationMiddleware";
-import { postsService } from "../domains/postsService";
-import { CodeResponsesEnum } from "../types/CodeResponsesEnum";
-import { postsQueryRepository } from "../repositories/postsQueryRepository";
 import { bearerAuthMiddleware } from "../middlewares/bearerAuthMiddleware";
 import { contentValidationMiddleware } from "./commentsRouter";
-import { commentsService } from "../domains/commentsService";
-import { commentsQueryRepository } from "../repositories/commentsQueryRepository";
+import { postsController } from "../composition/compositionRoot";
 
 export const postsRouter = Router({});
 
@@ -21,25 +17,9 @@ export const contentDescriptionValidationMiddleware = body("content").isString()
 
 const blogIdValidationMiddleware = body("blogId").custom(isValidBlogId);
 
-postsRouter.get('/', async (req: Request, res: Response) => {
-  const title = req.query.title;
-  const sortBy = req.query.sortBy;
-  const sortDirection = req.query.sortDirection;
-  const pageNumber = req.query.pageNumber;
-  const pageSize = req.query.pageSize;
-  const posts = await postsQueryRepository.getPosts({title, sortBy, sortDirection, pageNumber, pageSize});
-  res.status(200).send(posts);
-});
+postsRouter.get('/', postsController.getPosts.bind(postsController));
 
-postsRouter.get('/:id', async (req: Request, res: Response) => {
-  const postId = req.params.id;
-  const post = await postsService.getPostById(postId);
-  if (post) {
-    res.status(200).send(post);
-    return;
-  };
-  res.sendStatus(CodeResponsesEnum.Not_found_404);
-});
+postsRouter.get('/:id', postsController.getPostById.bind(postsController));
 
 postsRouter.post('/',
   basicAuthMiddleware,
@@ -48,15 +28,7 @@ postsRouter.post('/',
   contentDescriptionValidationMiddleware,
   blogIdValidationMiddleware,
   inputValidationMiddleware,
-  async (req: Request, res: Response) => {
-    const title = req.body.title;
-    const shortDescription = req.body.shortDescription;
-    const content = req.body.content;
-    const blogId = req.body.blogId;
-
-    const newPost = await postsService.createPost(title, shortDescription, content, blogId);
-    res.status(CodeResponsesEnum.Created_201).send(newPost);
-  }
+  postsController.createPost.bind(postsController)
 );
 
 postsRouter.put('/:id',
@@ -66,64 +38,16 @@ postsRouter.put('/:id',
   contentDescriptionValidationMiddleware,
   blogIdValidationMiddleware,
   inputValidationMiddleware,
-  async (req: Request, res: Response) => {
-    const postId = req.params.id;
-    const title = req.body.title;
-    const shortDescription = req.body.shortDescription;
-    const content = req.body.content;
-    const blogId = req.body.blogId;
-
-    const result = await postsService.updatePost(postId, title, shortDescription, content, blogId);
-    if (result) {
-      res.sendStatus(CodeResponsesEnum.No_content_204);
-    } else {
-      res.sendStatus(CodeResponsesEnum.Not_found_404);
-    };
-  }
+  postsController.updatePost.bind(postsController)
 );
 
-postsRouter.delete('/:id', basicAuthMiddleware, async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const result = await postsService.deletePost(id);
-  if (result) {
-    res.sendStatus(CodeResponsesEnum.No_content_204);
-    return;
-  }
-  res.sendStatus(CodeResponsesEnum.Not_found_404);
-});
+postsRouter.delete('/:id', basicAuthMiddleware, postsController.deletePost.bind(postsController));
 
-postsRouter.get('/:postId/comments', async (req: Request, res: Response) => {
-  const postId = req.params.postId;
-  const post = await postsService.getPostById(postId);
-  if (!post) {
-    res.sendStatus(CodeResponsesEnum.Not_found_404);
-    return;
-  };
-
-  const sortBy = req.query.sortBy;
-  const sortDirection = req.query.sortDirection;
-  const pageNumber = req.query.pageNumber;
-  const pageSize = req.query.pageSize;
-  const comments = await commentsQueryRepository.getComments(sortBy, sortDirection, pageNumber, pageSize, postId);
-  res.status(200).send(comments);
-});
+postsRouter.get('/:postId/comments', postsController.getCommentsForPost.bind(postsController));
 
 postsRouter.post('/:postId/comments',
   bearerAuthMiddleware,
   contentValidationMiddleware,
   inputValidationMiddleware,
-  async (req: Request, res: Response) => {
-    const postId = req.params.postId;
-    const post = await postsService.getPostById(postId);
-    if (!post) {
-      res.sendStatus(CodeResponsesEnum.Not_found_404);
-      return;
-    };
-
-    const userId = req.user!.id;
-    const content = req.body.content;
-
-    const newComment = await commentsService.createComment(content, postId, userId);
-    res.status(CodeResponsesEnum.Created_201).send(newComment);
-  }
+  postsController.createCommentForPost.bind(postsController)
 );

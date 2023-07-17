@@ -20,7 +20,7 @@ interface IGetPostsInput {
   blogId?: string
 }
 
-export const postsQueryRepository = {
+export class PostsQueryRepository {
   async getPosts({title, sortBy = "createdAt", sortDirection = "desc", pageNumber = "1", pageSize = "10", blogId}: IGetPostsInput): Promise<PostsWithMetaType> {
     const filter: any = {};
     
@@ -42,5 +42,5 @@ export const postsQueryRepository = {
       totalCount,
       items: posts,
     }
-  },
+  };
 };

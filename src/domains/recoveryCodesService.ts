@@ -1,20 +1,22 @@
 import { v4 as uuidv4 } from 'uuid';
 import { DeleteResult } from "mongodb";
 import { IRecoveryCode } from '../types/IRecoveryCode';
-import { recoveryCodesRepository } from '../repositories/recoveryCodesRepository';
+import { RecoveryCodesRepository } from '../repositories/recoveryCodesRepository';
 import { emailsManager } from '../utils/emailsManager';
 
-export const recoveryCodesService = {
+export class RecoveryCodesService {
+  constructor(protected readonly recoveryCodesRepository: RecoveryCodesRepository) {};
+
   async validateRecoveryCode(code: string): Promise<IRecoveryCode | null> {
-    const foundCode = await recoveryCodesRepository.getRecoveryCode(code);
+    const foundCode = await this.recoveryCodesRepository.getRecoveryCode(code);
 
     if (foundCode) {
-      await recoveryCodesRepository.deleteRecoveryCode(foundCode.id);
+      await this.recoveryCodesRepository.deleteRecoveryCode(foundCode.id);
       return foundCode;
     }
 
     return null;
-  },
+  };
 
   async addRecoveryCode(email: string): Promise<IRecoveryCode | undefined> {
     const recoveryCode = {
@@ -23,20 +25,20 @@ export const recoveryCodesService = {
       email,
     };
 
-    const savedCode = await recoveryCodesRepository.addRecoveryCode(recoveryCode);
+    const savedCode = await this.recoveryCodesRepository.addRecoveryCode(recoveryCode);
 
     try {
       await emailsManager.sendPasswordRecoveryEmail(email, savedCode.recoveryCode);
     } catch (error) {
       console.log(error);
-      recoveryCodesRepository.deleteRecoveryCode(savedCode.id);
+      this.recoveryCodesRepository.deleteRecoveryCode(savedCode.id);
       return;
     };
     
     return savedCode;
-  },
+  };
 
   async deleteRecoveryCode(id: string): Promise<DeleteResult> {
-    return await recoveryCodesRepository.deleteRecoveryCode(id);
-  },
+    return await this.recoveryCodesRepository.deleteRecoveryCode(id);
+  };
 };

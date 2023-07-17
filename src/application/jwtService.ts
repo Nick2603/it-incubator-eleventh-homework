@@ -2,15 +2,15 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 import { IUserViewModel } from "../types/IUser";
 
-export const jwtService = {
+export class JWTService {
   async createJWTAccessToken(user: IUserViewModel) {
-    const accessToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || "1", { expiresIn: 10 });
+    const accessToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || "1", { expiresIn: 600 });
     return { accessToken };
-  },
+  };
 
   async createJWTRefreshToken(user: IUserViewModel, deviceId?: string) {
-    return jwt.sign({ userId: user.id, deviceId: deviceId || uuidv4(), issuedAt: new Date().toISOString() }, process.env.JWT_SECRET || "1", { expiresIn: 20 });
-  },
+    return jwt.sign({ userId: user.id, deviceId: deviceId || uuidv4(), issuedAt: new Date().toISOString() }, process.env.JWT_SECRET || "1", { expiresIn: 600 });
+  };
 
   async getUserIdByToken(token: string) {
     try {
@@ -19,7 +19,7 @@ export const jwtService = {
     } catch (error) {
       return null;
     };
-  },
+  };
 
   async getRefreshTokenMetadata(token: string) {
     try {
@@ -28,5 +28,5 @@ export const jwtService = {
     } catch (error) {
       return null;
     };
-  },
+  };
 };

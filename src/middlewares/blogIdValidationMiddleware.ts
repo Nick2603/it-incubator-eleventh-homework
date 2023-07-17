@@ -1,5 +1,5 @@
 import { CustomValidator } from 'express-validator';
-import { blogsRepository } from '../repositories/blogsRepository';
+import { blogsRepository } from '../composition/compositionRoot';
 
 export const isValidBlogId: CustomValidator = async blogId => {
 

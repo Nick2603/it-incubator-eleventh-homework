@@ -2,7 +2,7 @@ import { Router } from "express";
 import { body } from "express-validator";
 import { basicAuthMiddleware } from "../middlewares/basicAuthMiddleware";
 import { inputValidationMiddleware } from "../middlewares/inputValidationMiddleware";
-import { usersController } from "../compositionRoot";
+import { usersController } from "../composition/compositionRoot";
 
 export const usersRouter = Router({});
 

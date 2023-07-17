@@ -11,7 +11,7 @@ type CommentsWithMetaType = {
   items: IComment[],
 }
 
-export const commentsQueryRepository = {
+export class CommentsQueryRepository {
   async getComments(sortBy: QueryParamType = "createdAt", sortDirection: QueryParamType = "desc", pageNumber: QueryParamType = "1", pageSize: QueryParamType = "10", postId: string): Promise<CommentsWithMetaType> {
     const filter: any = {};
 
@@ -29,5 +29,5 @@ export const commentsQueryRepository = {
       totalCount,
       items: comments,
     }
-  },
+  };
 };

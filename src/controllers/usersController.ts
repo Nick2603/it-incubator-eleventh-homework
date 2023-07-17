@@ -7,7 +7,7 @@ export class UsersController {
   constructor(
     protected readonly usersService: UsersService,
     protected readonly usersQueryRepository: UsersQueryRepository
-    ) {};
+  ) {};
 
   async getUsers(req: Request, res: Response) {
     const searchLoginTerm = req.query.searchLoginTerm;

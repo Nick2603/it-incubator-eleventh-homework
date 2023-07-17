@@ -1,5 +1,5 @@
 import { CustomValidator } from 'express-validator';
-import { usersRepository } from '../compositionRoot';
+import { usersRepository } from '../composition/compositionRoot';
 
 export const isUniqueEmail: CustomValidator = async email => {
 
