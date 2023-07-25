@@ -63,7 +63,6 @@ postsRouter.delete(
 
 postsRouter.get(
   "/:postId/comments",
-  bearerAuthMiddleware,
   postsController.getCommentsForPost.bind(postsController)
 );
 

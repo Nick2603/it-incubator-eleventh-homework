@@ -18,7 +18,6 @@ export const likeStatusValidationMiddleware =
 
 commentsRouter.get(
   "/:commentId",
-  bearerAuthMiddleware,
   commentsController.getCommentById.bind(commentsController)
 );
 

@@ -2,9 +2,13 @@ import { ILikesInfo, LikeStatus } from "../types/IComment";
 
 export const getUserLikeStatus = (
   likesInfo: ILikesInfo,
-  userId: string
+  userId?: string
 ): LikeStatus => {
   const { likes, dislikes } = likesInfo;
+
+  if (!userId) {
+    return LikeStatus.None;
+  }
 
   if (likes.userIds.includes(userId)) {
     return LikeStatus.Like;

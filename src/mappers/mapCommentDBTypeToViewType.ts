@@ -3,7 +3,7 @@ import { getUserLikeStatus } from "../utils/getUserLikeStatus";
 
 export const mapCommentDBTypeToViewType = (
   comment: ICommentDBModel,
-  userId: string
+  userId?: string
 ): ICommentViewModel => {
   const myStatus = getUserLikeStatus(comment.likesInfo, userId);
 

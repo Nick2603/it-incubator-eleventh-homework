@@ -87,7 +87,6 @@ export class PostsController {
   }
 
   async getCommentsForPost(req: Request, res: Response) {
-    const userId = req.user!.id;
     const postId = req.params.postId;
     const post = await this.postsService.getPostById(postId);
     if (!post) {
@@ -107,7 +106,7 @@ export class PostsController {
       postId
     );
     const commentsView = comments.items.map((comment) =>
-      mapCommentDBTypeToViewType(comment, userId)
+      mapCommentDBTypeToViewType(comment)
     );
     res.status(200).send({ ...comments, "comments.items": commentsView });
   }

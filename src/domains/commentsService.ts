@@ -20,7 +20,7 @@ export class CommentsService {
 
   async getCommentById(
     id: string,
-    userId: string
+    userId?: string
   ): Promise<ICommentViewModel | null> {
     const result = await this.commentsRepository.getCommentById(id);
     if (result) {
