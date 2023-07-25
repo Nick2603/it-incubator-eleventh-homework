@@ -6,7 +6,7 @@ const url = process.env.MONGO_URL;
 
 if (!url) {
   throw new Error("URL is not found");
-};
+}
 
 export const runDb = async () => {
   try {
@@ -15,5 +15,5 @@ export const runDb = async () => {
   } catch (e) {
     console.log("Not connected");
     await mongoose.disconnect();
-  };
+  }
 };

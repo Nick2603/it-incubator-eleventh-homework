@@ -9,19 +9,32 @@ import { postsController } from "../composition/compositionRoot";
 
 export const postsRouter = Router({});
 
-export const titleValidationMiddleware = body("title").isString().trim().isLength({ min: 2, max: 30 }).withMessage("Incorrect value for title");
+export const titleValidationMiddleware = body("title")
+  .isString()
+  .trim()
+  .isLength({ min: 2, max: 30 })
+  .withMessage("Incorrect value for title");
 
-export const shortDescriptionValidationMiddleware = body("shortDescription").isString().trim().isLength({ min: 2, max: 100 }).withMessage("Incorrect value for shortDescription");
+export const shortDescriptionValidationMiddleware = body("shortDescription")
+  .isString()
+  .trim()
+  .isLength({ min: 2, max: 100 })
+  .withMessage("Incorrect value for shortDescription");
 
-export const contentDescriptionValidationMiddleware = body("content").isString().trim().isLength({ min: 2, max: 1000 }).withMessage("Incorrect value for content");
+export const contentDescriptionValidationMiddleware = body("content")
+  .isString()
+  .trim()
+  .isLength({ min: 2, max: 1000 })
+  .withMessage("Incorrect value for content");
 
 const blogIdValidationMiddleware = body("blogId").custom(isValidBlogId);
 
-postsRouter.get('/', postsController.getPosts.bind(postsController));
+postsRouter.get("/", postsController.getPosts.bind(postsController));
 
-postsRouter.get('/:id', postsController.getPostById.bind(postsController));
+postsRouter.get("/:id", postsController.getPostById.bind(postsController));
 
-postsRouter.post('/',
+postsRouter.post(
+  "/",
   basicAuthMiddleware,
   titleValidationMiddleware,
   shortDescriptionValidationMiddleware,
@@ -31,7 +44,8 @@ postsRouter.post('/',
   postsController.createPost.bind(postsController)
 );
 
-postsRouter.put('/:id',
+postsRouter.put(
+  "/:id",
   basicAuthMiddleware,
   titleValidationMiddleware,
   shortDescriptionValidationMiddleware,
@@ -41,11 +55,20 @@ postsRouter.put('/:id',
   postsController.updatePost.bind(postsController)
 );
 
-postsRouter.delete('/:id', basicAuthMiddleware, postsController.deletePost.bind(postsController));
+postsRouter.delete(
+  "/:id",
+  basicAuthMiddleware,
+  postsController.deletePost.bind(postsController)
+);
 
-postsRouter.get('/:postId/comments', postsController.getCommentsForPost.bind(postsController));
+postsRouter.get(
+  "/:postId/comments",
+  bearerAuthMiddleware,
+  postsController.getCommentsForPost.bind(postsController)
+);
 
-postsRouter.post('/:postId/comments',
+postsRouter.post(
+  "/:postId/comments",
   bearerAuthMiddleware,
   contentValidationMiddleware,
   inputValidationMiddleware,

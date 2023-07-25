@@ -1,5 +1,5 @@
-import { runDb } from './db';
-import { app } from './settings'
+import { runDb } from "./db";
+import { app } from "./settings";
 
 const port = process.env.PORT || 3000;
 

@@ -1,7 +1,7 @@
-import { Schema, model } from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
-import { WithId } from 'mongodb';
-import { IAccountData, IUserDBModel, IEmailConfirmation } from '../types/IUser';
+import { Schema, model } from "mongoose";
+import { v4 as uuidv4 } from "uuid";
+import { WithId } from "mongodb";
+import { IAccountData, IUserDBModel, IEmailConfirmation } from "../types/IUser";
 
 const AccountDataSchema = new Schema<IAccountData>(
   {
@@ -23,16 +23,22 @@ const EmailConfirmationSchema = new Schema<IEmailConfirmation>(
 );
 
 const UserSchema = new Schema<WithId<IUserDBModel>>({
-  _id: { type: String, required: true, immutable: true, alias: "id", default: uuidv4 },
+  _id: {
+    type: String,
+    required: true,
+    immutable: true,
+    alias: "id",
+    default: uuidv4,
+  },
   accountData: { type: AccountDataSchema, required: true },
   emailConfirmation: { type: EmailConfirmationSchema, required: true },
 });
 
-UserSchema.set('toJSON', {
-  transform: function (_, ret, __) {
-      ret.id = ret._id;
-      delete ret._id;
-  }
+UserSchema.set("toJSON", {
+  transform: function (_, ret) {
+    ret.id = ret._id;
+    delete ret._id;
+  },
 });
 
 export const UserModel = model<IUserDBModel>("users", UserSchema);

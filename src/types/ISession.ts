@@ -1,15 +1,15 @@
 export interface ISessionDBModel {
   id: string;
-  ip:	string;
+  ip: string;
   title: string;
-  lastActiveDate:	string;
-  deviceId:	string;
+  lastActiveDate: string;
+  deviceId: string;
   userId: string;
-};
+}
 
 export interface ISessionViewModel {
-  ip:	string;
+  ip: string;
   title: string;
-  lastActiveDate:	string;
-  deviceId:	string;
-};
+  lastActiveDate: string;
+  deviceId: string;
+}

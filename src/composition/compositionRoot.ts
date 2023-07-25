@@ -34,7 +34,10 @@ const usersQueryRepository = new UsersQueryRepository();
 
 export const usersService = new UsersService(usersRepository);
 
-export const usersController = new UsersController(usersService, usersQueryRepository);
+export const usersController = new UsersController(
+  usersService,
+  usersQueryRepository
+);
 
 // -----------------------Comment----------------- //
 
@@ -42,9 +45,15 @@ export const commentsQueryRepository = new CommentsQueryRepository();
 
 export const commentsRepository = new CommentsRepository();
 
-export const commentsService = new CommentsService(commentsRepository, usersRepository);
+export const commentsService = new CommentsService(
+  commentsRepository,
+  usersRepository
+);
 
-export const commentsController = new CommentsController(commentsService, commentsQueryRepository);
+export const commentsController = new CommentsController(
+  commentsService,
+  commentsQueryRepository
+);
 
 // -----------------------Blog----------------- //
 
@@ -58,7 +67,12 @@ export const postsRepository = new PostsRepository();
 
 export const postsService = new PostsService(postsRepository, blogsRepository);
 
-export const postsController = new PostsController(postsService, postsQueryRepository, commentsQueryRepository, commentsService);
+export const postsController = new PostsController(
+  postsService,
+  postsQueryRepository,
+  commentsQueryRepository,
+  commentsService
+);
 
 // -----------------------Blog----------------- //
 
@@ -66,22 +80,41 @@ const blogsQueryRepository = new BlogsQueryRepository();
 
 const blogsService = new BlogsService(blogsRepository);
 
-export const blogsController = new BlogsController(blogsService, blogsQueryRepository, postsService, postsQueryRepository);
+export const blogsController = new BlogsController(
+  blogsService,
+  blogsQueryRepository,
+  postsService,
+  postsQueryRepository
+);
 
 // -----------------------RecoveryCode----------------- //
 
 export const recoveryCodesRepository = new RecoveryCodesRepository();
 
-export const recoveryCodesService = new RecoveryCodesService(recoveryCodesRepository);
+export const recoveryCodesService = new RecoveryCodesService(
+  recoveryCodesRepository
+);
 
 // -----------------------Session----------------- //
 
 export const sessionsRepository = new SessionsRepository();
 
-export const sessionsService = new SessionsService(sessionsRepository, jwtService);
+export const sessionsService = new SessionsService(
+  sessionsRepository,
+  jwtService
+);
 
-export const sessionsController = new SessionsController(sessionsService, jwtService);
+export const sessionsController = new SessionsController(
+  sessionsService,
+  jwtService
+);
 
 // -----------------------Auth----------------- //
 
-export const authController = new AuthController(jwtService, sessionsService, usersRepository, usersService, recoveryCodesService);
+export const authController = new AuthController(
+  jwtService,
+  sessionsService,
+  usersRepository,
+  usersService,
+  recoveryCodesService
+);

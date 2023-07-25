@@ -8,12 +8,13 @@ import { authRouter } from "./routes/authRouter";
 import { commentsRouter } from "./routes/commentsRouter";
 import cookieParser from "cookie-parser";
 import { devicesRouter } from "./routes/devicesRouter";
-import { 
+import {
   blogsRepository,
   commentsRepository,
-  postsRepository, recoveryCodesRepository,
+  postsRepository,
+  recoveryCodesRepository,
   sessionsRepository,
-  usersRepository
+  usersRepository,
 } from "./composition/compositionRoot";
 
 export const app = express();
@@ -28,7 +29,7 @@ app.use(cookieParser());
 
 app.set("trust proxy", true);
 
-app.delete('/testing/all-data', async (req: Request, res: Response) => {
+app.delete("/testing/all-data", async (req: Request, res: Response) => {
   await blogsRepository.deleteAllBlogs();
   await postsRepository.deleteAllPosts();
   await usersRepository.deleteAllUsers();

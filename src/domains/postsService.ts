@@ -6,17 +6,22 @@ export class PostsService {
   constructor(
     protected readonly postsRepository: PostsRepository,
     protected readonly blogsRepository: BlogsRepository
-    ) {};
+  ) {}
 
   async deleteAllPosts(): Promise<void> {
     await this.postsRepository.deleteAllPosts();
-  };
+  }
 
   async getPostById(id: string): Promise<IPost | null> {
     return await this.postsRepository.getPostById(id);
-  };
+  }
 
-  async createPost(title: string, shortDescription: string, content: string, blogId: string): Promise<IPost> {
+  async createPost(
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: string
+  ): Promise<IPost> {
     const blog = await this.blogsRepository.getBlogById(blogId);
     const newPost: IPost = {
       id: Date.now().toString(),
@@ -37,13 +42,25 @@ export class PostsService {
       createdAt: newPost.createdAt,
       blogName: newPost.blogName,
     };
-  };
+  }
 
-  async updatePost(id: string, title: string, shortDescription: string, content: string, blogId: string): Promise<boolean> {
-    return await this.postsRepository.updatePost(id, title, shortDescription, content, blogId);
-  };
+  async updatePost(
+    id: string,
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: string
+  ): Promise<boolean> {
+    return await this.postsRepository.updatePost(
+      id,
+      title,
+      shortDescription,
+      content,
+      blogId
+    );
+  }
 
   async deletePost(id: string): Promise<boolean> {
     return await this.postsRepository.deletePost(id);
-  };
-};
+  }
+}

@@ -3,7 +3,7 @@ export interface IUserViewModel {
   login: string;
   email: string;
   createdAt: string;
-};
+}
 
 export interface IAccountData {
   login: string;
@@ -19,7 +19,7 @@ export interface IEmailConfirmation {
 }
 
 export interface IUserDBModel {
-  id: string,
-  accountData: IAccountData,
-  emailConfirmation: IEmailConfirmation,
-};
+  id: string;
+  accountData: IAccountData;
+  emailConfirmation: IEmailConfirmation;
+}

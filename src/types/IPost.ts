@@ -1,4 +1,4 @@
-export interface IPost{
+export interface IPost {
   id: string;
   title: string;
   shortDescription: string;
@@ -6,4 +6,4 @@ export interface IPost{
   blogId: string;
   blogName: string;
   createdAt: string;
-};
+}

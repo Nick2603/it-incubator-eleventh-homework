@@ -1,93 +1,131 @@
 import bcrypt from "bcrypt";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import { emailsManager } from "../utils/emailsManager";
-import { IUserViewModel } from '../types/IUser';
+import { IUserViewModel } from "../types/IUser";
 import { ErrorsType } from "../types/ErrorsType";
 import { usersRepository, usersService } from "../composition/compositionRoot";
 
 export const authService = {
-  async createUser(login: string, email: string, password: string): Promise<boolean> {
-    const savedUser = await usersService.createUser(login, email, password, false, true, true);
+  async createUser(
+    login: string,
+    email: string,
+    password: string
+  ): Promise<boolean> {
+    const savedUser = await usersService.createUser(
+      login,
+      email,
+      password,
+      false,
+      true,
+      true
+    );
 
     try {
-      await emailsManager.sendRegistrationConfirmationEmail(savedUser.email, savedUser.code!);
+      await emailsManager.sendRegistrationConfirmationEmail(
+        savedUser.email,
+        savedUser.code!
+      );
     } catch (error) {
       console.error(error);
       await usersService.deleteUser(savedUser.id.toString());
       return false;
-    };
+    }
     return true;
   },
 
   async resendEmail(email: string): Promise<boolean | ErrorsType> {
     const errors: ErrorsType = { errorsMessages: [] };
-  
+
     const user = await usersRepository.getUserByEmail(email);
-  
+
     if (!user) {
-      errors.errorsMessages.push({ message: "user is not found", field: "email" });
+      errors.errorsMessages.push({
+        message: "user is not found",
+        field: "email",
+      });
       return errors;
-    };
-  
+    }
+
     if (user.emailConfirmation.isConfirmed) {
-      errors.errorsMessages.push({ message: "email is already confirmed", field: "email" });
+      errors.errorsMessages.push({
+        message: "email is already confirmed",
+        field: "email",
+      });
       return errors;
-    };
+    }
 
     const newConfirmationCode = uuidv4();
 
     try {
-      usersRepository.changeUserConfirmationCode(user.id, newConfirmationCode)
+      usersRepository.changeUserConfirmationCode(user.id, newConfirmationCode);
     } catch (error) {
       console.error(error);
       return false;
     }
 
     try {
-      await emailsManager.sendRegistrationConfirmationEmail(user.accountData.email, newConfirmationCode);
+      await emailsManager.sendRegistrationConfirmationEmail(
+        user.accountData.email,
+        newConfirmationCode
+      );
     } catch (error) {
       console.error(error);
       return false;
-    };
+    }
 
     return true;
   },
 
   async confirmEmail(code: string): Promise<boolean | ErrorsType> {
     const errors: ErrorsType = { errorsMessages: [] };
-  
+
     const user = await usersService.getUserByEmailConfirmationCode(code);
 
     if (!user) {
-      errors.errorsMessages.push({ message: "invalid code", field: "code" });
+      errors.errorsMessages.push({
+        message: "invalid code",
+        field: "code",
+      });
       return errors;
-    };
+    }
 
     if (user.emailConfirmation.isConfirmed) {
-      errors.errorsMessages.push({ message: "invalid code", field: "code" });
+      errors.errorsMessages.push({
+        message: "invalid code",
+        field: "code",
+      });
       return errors;
-    };
+    }
 
     if (user.emailConfirmation.expirationDate < new Date()) {
-      errors.errorsMessages.push({ message: "invalid code", field: "code" });
+      errors.errorsMessages.push({
+        message: "invalid code",
+        field: "code",
+      });
       return errors;
-    };
+    }
 
     const result = await usersRepository.confirmEmail(user.id);
-  
+
     return result;
   },
 
-  async checkCredentials(loginOrEmail: string, password: string): Promise<IUserViewModel | null> {
+  async checkCredentials(
+    loginOrEmail: string,
+    password: string
+  ): Promise<IUserViewModel | null> {
     const user = await usersRepository.findByLoginOrEmail(loginOrEmail);
-    
+
     if (!user) return null;
-    const comparePasswordsResult = await bcrypt.compare(password, user.accountData.password);
-    
+    const comparePasswordsResult = await bcrypt.compare(
+      password,
+      user.accountData.password
+    );
+
     if (!comparePasswordsResult) {
       return null;
-    };
-  
+    }
+
     return {
       id: user.id,
       login: user.accountData.login,
