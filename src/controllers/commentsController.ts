@@ -2,17 +2,25 @@ import { Request, Response } from "express";
 import { CommentsService } from "../domains/commentsService";
 import { CommentsQueryRepository } from "../repositories/commentsQueryRepository";
 import { CodeResponsesEnum } from "../types/CodeResponsesEnum";
+import { JWTService } from "../application/jwtService";
 
 export class CommentsController {
   constructor(
     protected readonly commentsService: CommentsService,
-    protected readonly commentsQueryRepository: CommentsQueryRepository
+    protected readonly commentsQueryRepository: CommentsQueryRepository,
+    protected readonly jwtService: JWTService
   ) {}
 
   async getCommentById(req: Request, res: Response) {
     const commentId = req.params.commentId;
+    let userId: string | undefined;
 
-    const comment = await this.commentsService.getCommentById(commentId);
+    if (req.headers.authorization) {
+      const token = req.headers.authorization.split(" ")[1];
+      userId = await this.jwtService.getUserIdByToken(token);
+    }
+
+    const comment = await this.commentsService.getCommentById(commentId, userId);
     if (comment) {
       res.status(200).send(comment);
       return;

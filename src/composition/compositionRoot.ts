@@ -52,7 +52,8 @@ export const commentsService = new CommentsService(
 
 export const commentsController = new CommentsController(
   commentsService,
-  commentsQueryRepository
+  commentsQueryRepository,
+  jwtService
 );
 
 // -----------------------Blog----------------- //
