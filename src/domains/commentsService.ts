@@ -56,7 +56,14 @@ export class CommentsService {
       },
     };
     const result = await this.commentsRepository.createComment(newComment);
-    return mapCommentDBTypeToViewType(result, userId);
+    const viewModel = mapCommentDBTypeToViewType(result, userId);
+    return {
+      id: viewModel.id,
+      content: viewModel.content,
+      commentatorInfo: viewModel.commentatorInfo,
+      createdAt: viewModel.createdAt,
+      likesInfo: viewModel.likesInfo,
+    }
   }
 
   async updateComment(
@@ -136,6 +143,17 @@ export class CommentsService {
           return false;
         }
       }
+
+      if (likeStatus === LikeStatus.None) {
+        try {
+          await this.commentsRepository.removeLike(comment.id);
+          await this.commentsRepository.removeLikedUser(comment.id, userId);
+          return true;
+        } catch (error) {
+          console.error(error);
+          return false;
+        }
+      }
     }
 
     if (myStatus === LikeStatus.Dislike) {
@@ -145,6 +163,17 @@ export class CommentsService {
           await this.commentsRepository.removeDislikedUser(comment.id, userId);
           await this.commentsRepository.addLike(comment.id);
           await this.commentsRepository.addLikedUser(comment.id, userId);
+          return true;
+        } catch (error) {
+          console.error(error);
+          return false;
+        }
+      }
+
+      if (likeStatus === LikeStatus.None) {
+        try {
+          await this.commentsRepository.removeDislike(comment.id);
+          await this.commentsRepository.removeDislikedUser(comment.id, userId);
           return true;
         } catch (error) {
           console.error(error);
