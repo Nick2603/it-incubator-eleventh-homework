@@ -72,7 +72,8 @@ export const postsController = new PostsController(
   postsService,
   postsQueryRepository,
   commentsQueryRepository,
-  commentsService
+  commentsService,
+  jwtService
 );
 
 // -----------------------Blog----------------- //

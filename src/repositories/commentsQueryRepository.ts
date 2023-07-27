@@ -27,7 +27,7 @@ export class CommentsQueryRepository {
     }
 
     const totalCount = await CommentModel.countDocuments(filter);
-    const comments = await CommentModel.find(filter, { _id: 0, postId: 0 })
+    const comments = await CommentModel.find(filter, { postId: 0 })
       .sort({ [sortBy.toString()]: sortDirection as SortOrder })
       .skip((+pageNumber - 1) * +pageSize)
       .limit(+pageSize);

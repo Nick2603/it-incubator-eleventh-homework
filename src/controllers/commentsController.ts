@@ -20,7 +20,10 @@ export class CommentsController {
       userId = await this.jwtService.getUserIdByToken(token);
     }
 
-    const comment = await this.commentsService.getCommentById(commentId, userId);
+    const comment = await this.commentsService.getCommentById(
+      commentId,
+      userId
+    );
     if (comment) {
       res.status(200).send(comment);
       return;

@@ -5,13 +5,15 @@ import { PostsQueryRepository } from "../repositories/postsQueryRepository";
 import { CodeResponsesEnum } from "../types/CodeResponsesEnum";
 import { CommentsQueryRepository } from "../repositories/commentsQueryRepository";
 import { CommentsService } from "../domains/commentsService";
+import { JWTService } from "../application/jwtService";
 
 export class PostsController {
   constructor(
     protected readonly postsService: PostsService,
     protected readonly postsQueryRepository: PostsQueryRepository,
     protected readonly commentsQueryRepository: CommentsQueryRepository,
-    protected readonly commentsService: CommentsService
+    protected readonly commentsService: CommentsService,
+    protected readonly jwtService: JWTService
   ) {}
 
   async getPosts(req: Request, res: Response) {
@@ -87,6 +89,13 @@ export class PostsController {
   }
 
   async getCommentsForPost(req: Request, res: Response) {
+    let userId: string | undefined;
+
+    if (req.headers.authorization) {
+      const token = req.headers.authorization.split(" ")[1];
+      userId = await this.jwtService.getUserIdByToken(token);
+    }
+
     const postId = req.params.postId;
     const post = await this.postsService.getPostById(postId);
     if (!post) {
@@ -106,9 +115,9 @@ export class PostsController {
       postId
     );
     const commentsView = comments.items.map((comment) =>
-      mapCommentDBTypeToViewType(comment)
+      mapCommentDBTypeToViewType(comment, userId)
     );
-    res.status(200).send({ ...comments, "comments.items": commentsView });
+    res.status(200).send({ ...comments, items: commentsView });
   }
 
   async createCommentForPost(req: Request, res: Response) {

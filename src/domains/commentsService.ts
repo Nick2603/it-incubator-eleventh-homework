@@ -63,7 +63,7 @@ export class CommentsService {
       commentatorInfo: viewModel.commentatorInfo,
       createdAt: viewModel.createdAt,
       likesInfo: viewModel.likesInfo,
-    }
+    };
   }
 
   async updateComment(
