@@ -42,7 +42,7 @@ export class PostsController {
       const token = req.headers.authorization.split(" ")[1];
       userId = await this.jwtService.getUserIdByToken(token);
     }
-    
+
     const postId = req.params.id;
     const post = await this.postsService.getPostById(postId, userId);
     if (post) {

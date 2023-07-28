@@ -38,7 +38,7 @@ export class PostsRepository {
 
   async addNewLikedUserInfo(postId: string, newLikeInfo: ILikeInfo) {
     const result = await PostModel.updateOne(
-      { id: postId },
+      { _id: postId },
       { $push: { likesInfo: newLikeInfo } }
     );
 
@@ -46,7 +46,7 @@ export class PostsRepository {
   }
 
   async hasUserLikedAlready(postId: string, userId: string) {
-    const post = await PostModel.findOne({ id: postId });
+    const post = await PostModel.findOne({ _id: postId });
 
     if (!post) {
       return false;
@@ -74,7 +74,7 @@ export class PostsRepository {
       return false;
     }
 
-    const post = await PostModel.findOne({ id: postId });
+    const post = await PostModel.findOne({ _id: postId });
 
     if (!post) {
       return false;

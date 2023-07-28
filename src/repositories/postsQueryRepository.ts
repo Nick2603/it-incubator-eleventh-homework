@@ -41,7 +41,7 @@ export class PostsQueryRepository {
     }
 
     const totalCount = await PostModel.countDocuments(filter);
-    const posts = await PostModel.find(filter, { _id: 0 })
+    const posts = await PostModel.find(filter)
       .sort({ [sortBy.toString()]: sortDirection as SortOrder })
       .skip((+pageNumber - 1) * +pageSize)
       .limit(+pageSize);
