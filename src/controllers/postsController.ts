@@ -36,8 +36,15 @@ export class PostsController {
   }
 
   async getPostById(req: Request, res: Response) {
+    let userId: string | undefined;
+
+    if (req.headers.authorization) {
+      const token = req.headers.authorization.split(" ")[1];
+      userId = await this.jwtService.getUserIdByToken(token);
+    }
+    
     const postId = req.params.id;
-    const post = await this.postsService.getPostById(postId);
+    const post = await this.postsService.getPostById(postId, userId);
     if (post) {
       res.status(200).send(post);
       return;

@@ -18,12 +18,12 @@ export class PostsService {
     await this.postsRepository.deleteAllPosts();
   }
 
-  async getPostById(id: string): Promise<IPostViewModel | null> {
+  async getPostById(id: string, userId?:string): Promise<IPostViewModel | null> {
     const foundPost = await this.postsRepository.getPostById(id);
 
     if (!foundPost) return null;
 
-    return mapPostDBTypeToViewType(foundPost);
+    return mapPostDBTypeToViewType(foundPost, userId);
   }
 
   async createPost(
