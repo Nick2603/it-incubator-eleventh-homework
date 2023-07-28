@@ -5,13 +5,15 @@ import { CodeResponsesEnum } from "../types/CodeResponsesEnum";
 import { PostsService } from "../domains/postsService";
 import { PostsQueryRepository } from "../repositories/postsQueryRepository";
 import { mapPostDBTypeToViewType } from "../mappers/mapPostDBTypeToViewType";
+import { JWTService } from "../application/jwtService";
 
 export class BlogsController {
   constructor(
     protected readonly blogsService: BlogsService,
     protected readonly blogsQueryRepository: BlogsQueryRepository,
     protected readonly postsService: PostsService,
-    protected readonly postsQueryRepository: PostsQueryRepository
+    protected readonly postsQueryRepository: PostsQueryRepository,
+    protected readonly jwtService: JWTService
   ) {}
 
   async getBlogs(req: Request, res: Response) {
@@ -86,6 +88,13 @@ export class BlogsController {
     const blogId = req.params.blogId;
     const blog = await this.blogsService.getBlogById(blogId);
     if (blog) {
+      let userId: string | undefined;
+
+      if (req.headers.authorization) {
+        const token = req.headers.authorization.split(" ")[1];
+        userId = await this.jwtService.getUserIdByToken(token);
+      }
+
       const title = req.params.title;
       const sortBy = req.query.sortBy;
       const sortDirection = req.query.sortDirection;
@@ -101,7 +110,7 @@ export class BlogsController {
       });
 
       const postsView = posts.items.map((post) =>
-        mapPostDBTypeToViewType(post)
+        mapPostDBTypeToViewType(post, userId)
       );
 
       res.status(200).send({ ...posts, items: postsView });
