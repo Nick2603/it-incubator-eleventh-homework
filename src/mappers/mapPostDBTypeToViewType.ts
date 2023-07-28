@@ -16,6 +16,7 @@ export const getUserLikeStatusForPost = (
 
 const getNewestLikes = (likesInfo: ILikeInfo[]) => {
   return likesInfo
+    .filter((like) => like.likeStatus === LikeStatus.Like)
     .sort((a, b) => b.addedAt.getTime() - a.addedAt.getTime())
     .map((like) => ({ addedAt: like.addedAt, userId: like.userId, login: like.login }))
     .slice(0, 3);
