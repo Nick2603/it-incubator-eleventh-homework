@@ -84,7 +84,7 @@ export class PostsService {
         likeStatus,
         addedAt: new Date(),
       };
-      this.postsRepository.addNewLikedUserInfo(post.id, likeInfo);
+      return this.postsRepository.addNewLikedUserInfo(post.id, likeInfo);
     }
 
     if (myStatus === likeStatus) return true;
