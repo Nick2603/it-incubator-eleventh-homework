@@ -70,7 +70,7 @@ export class PostsRepository {
   ) {
     const likedInfoIndex = await this.hasUserLikedAlready(postId, userId);
 
-    if (!likedInfoIndex) {
+    if (likedInfoIndex === false || likedInfoIndex < 0) {
       return false;
     }
 

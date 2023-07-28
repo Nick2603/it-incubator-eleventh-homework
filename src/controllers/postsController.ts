@@ -39,7 +39,9 @@ export class PostsController {
       pageSize,
     });
 
-    const postsView = posts.items.map((post) => mapPostDBTypeToViewType(post, userId));
+    const postsView = posts.items.map((post) =>
+      mapPostDBTypeToViewType(post, userId)
+    );
     res.status(200).send({ ...posts, items: postsView });
   }
 

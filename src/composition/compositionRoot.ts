@@ -86,7 +86,8 @@ export const blogsController = new BlogsController(
   blogsService,
   blogsQueryRepository,
   postsService,
-  postsQueryRepository
+  postsQueryRepository,
+  jwtService
 );
 
 // -----------------------RecoveryCode----------------- //
