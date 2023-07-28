@@ -23,6 +23,14 @@ export class PostsController {
     const sortDirection = req.query.sortDirection;
     const pageNumber = req.query.pageNumber;
     const pageSize = req.query.pageSize;
+
+    let userId: string | undefined;
+
+    if (req.headers.authorization) {
+      const token = req.headers.authorization.split(" ")[1];
+      userId = await this.jwtService.getUserIdByToken(token);
+    }
+
     const posts = await this.postsQueryRepository.getPosts({
       title,
       sortBy,
@@ -31,7 +39,7 @@ export class PostsController {
       pageSize,
     });
 
-    const postsView = posts.items.map((post) => mapPostDBTypeToViewType(post));
+    const postsView = posts.items.map((post) => mapPostDBTypeToViewType(post, userId));
     res.status(200).send({ ...posts, items: postsView });
   }
 
