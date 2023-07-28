@@ -1,12 +1,8 @@
+import { LikeStatus } from "./LikeStatusEnum";
+
 export interface ICommentatorInfo {
   userId: string;
   userLogin: string;
-}
-
-export enum LikeStatus {
-  None = "None",
-  Like = "Like",
-  Dislike = "Dislike",
 }
 
 export interface ILikesInfo {

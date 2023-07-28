@@ -1,11 +1,8 @@
 import { mapCommentDBTypeToViewType } from "../mappers/mapCommentDBTypeToViewType";
 import { CommentsRepository } from "../repositories/commentsRepository";
 import { UsersRepository } from "../repositories/usersRepository";
-import {
-  ICommentViewModel,
-  ICommentDBModel,
-  LikeStatus,
-} from "../types/IComment";
+import { ICommentViewModel, ICommentDBModel } from "../types/IComment";
+import { LikeStatus } from "../types/LikeStatusEnum";
 import { getUserLikeStatus } from "../utils/getUserLikeStatus";
 
 export class CommentsService {

@@ -4,6 +4,7 @@ import { BlogsQueryRepository } from "../repositories/blogsQueryRepository";
 import { CodeResponsesEnum } from "../types/CodeResponsesEnum";
 import { PostsService } from "../domains/postsService";
 import { PostsQueryRepository } from "../repositories/postsQueryRepository";
+import { mapPostDBTypeToViewType } from "../mappers/mapPostDBTypeToViewType";
 
 export class BlogsController {
   constructor(
@@ -98,7 +99,12 @@ export class BlogsController {
         pageSize,
         blogId,
       });
-      res.status(200).send(posts);
+
+      const postsView = posts.items.map((post) =>
+        mapPostDBTypeToViewType(post)
+      );
+
+      res.status(200).send({ ...posts, items: postsView });
       return;
     }
     res.sendStatus(CodeResponsesEnum.Not_found_404);

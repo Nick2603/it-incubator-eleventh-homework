@@ -4,7 +4,10 @@ import { basicAuthMiddleware } from "../middlewares/basicAuthMiddleware";
 import { isValidBlogId } from "../middlewares/blogIdValidationMiddleware";
 import { inputValidationMiddleware } from "../middlewares/inputValidationMiddleware";
 import { bearerAuthMiddleware } from "../middlewares/bearerAuthMiddleware";
-import { contentValidationMiddleware } from "./commentsRouter";
+import {
+  contentValidationMiddleware,
+  likeStatusValidationMiddleware,
+} from "./commentsRouter";
 import { postsController } from "../composition/compositionRoot";
 
 export const postsRouter = Router({});
@@ -72,4 +75,12 @@ postsRouter.post(
   contentValidationMiddleware,
   inputValidationMiddleware,
   postsController.createCommentForPost.bind(postsController)
+);
+
+postsRouter.put(
+  "/:postId/like-status",
+  bearerAuthMiddleware,
+  likeStatusValidationMiddleware,
+  inputValidationMiddleware,
+  postsController.updateLikeStatus.bind(postsController)
 );

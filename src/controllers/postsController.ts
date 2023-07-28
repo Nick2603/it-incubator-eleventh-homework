@@ -6,6 +6,7 @@ import { CodeResponsesEnum } from "../types/CodeResponsesEnum";
 import { CommentsQueryRepository } from "../repositories/commentsQueryRepository";
 import { CommentsService } from "../domains/commentsService";
 import { JWTService } from "../application/jwtService";
+import { mapPostDBTypeToViewType } from "../mappers/mapPostDBTypeToViewType";
 
 export class PostsController {
   constructor(
@@ -29,7 +30,9 @@ export class PostsController {
       pageNumber,
       pageSize,
     });
-    res.status(200).send(posts);
+
+    const postsView = posts.items.map((post) => mapPostDBTypeToViewType(post));
+    res.status(200).send({ ...posts, items: postsView });
   }
 
   async getPostById(req: Request, res: Response) {
@@ -137,5 +140,19 @@ export class PostsController {
       userId
     );
     res.status(CodeResponsesEnum.Created_201).send(newComment);
+  }
+
+  async updateLikeStatus(req: Request, res: Response) {
+    const postId = req.params.postId;
+    const user = req.user!;
+    const likeStatus = req.body.likeStatus;
+
+    const result = await this.postsService.updateLikeStatus(
+      postId,
+      user,
+      likeStatus
+    );
+    if (!result) return res.sendStatus(CodeResponsesEnum.Not_found_404);
+    return res.sendStatus(CodeResponsesEnum.No_content_204);
   }
 }

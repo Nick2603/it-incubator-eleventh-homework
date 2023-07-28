@@ -1,4 +1,5 @@
-import { ILikesInfo, LikeStatus } from "../types/IComment";
+import { ILikesInfo } from "../types/IComment";
+import { LikeStatus } from "../types/LikeStatusEnum";
 
 export const getUserLikeStatus = (
   likesInfo: ILikesInfo,

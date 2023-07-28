@@ -1,6 +1,12 @@
+import {
+  getUserLikeStatusForPost,
+  mapPostDBTypeToViewType,
+} from "../mappers/mapPostDBTypeToViewType";
 import { BlogsRepository } from "../repositories/blogsRepository";
 import { PostsRepository } from "../repositories/postsRepository";
-import { IPost } from "../types/IPost";
+import { IPostDBModel, IPostViewModel } from "../types/IPost";
+import { IUserDBModel } from "../types/IUser";
+import { LikeStatus } from "../types/LikeStatusEnum";
 
 export class PostsService {
   constructor(
@@ -12,8 +18,12 @@ export class PostsService {
     await this.postsRepository.deleteAllPosts();
   }
 
-  async getPostById(id: string): Promise<IPost | null> {
-    return await this.postsRepository.getPostById(id);
+  async getPostById(id: string): Promise<IPostViewModel | null> {
+    const foundPost = await this.postsRepository.getPostById(id);
+
+    if (!foundPost) return null;
+
+    return mapPostDBTypeToViewType(foundPost);
   }
 
   async createPost(
@@ -21,9 +31,9 @@ export class PostsService {
     shortDescription: string,
     content: string,
     blogId: string
-  ): Promise<IPost> {
+  ): Promise<IPostViewModel> {
     const blog = await this.blogsRepository.getBlogById(blogId);
-    const newPost: IPost = {
+    const newPost: IPostDBModel = {
       id: Date.now().toString(),
       title,
       shortDescription,
@@ -31,17 +41,10 @@ export class PostsService {
       blogId,
       createdAt: new Date().toISOString(),
       blogName: blog!.name,
+      likesInfo: [],
     };
-    await this.postsRepository.createPost(newPost);
-    return {
-      id: newPost.id,
-      title: newPost.title,
-      shortDescription: newPost.shortDescription,
-      content: newPost.content,
-      blogId: newPost.blogId,
-      createdAt: newPost.createdAt,
-      blogName: newPost.blogName,
-    };
+    const createdPost = await this.postsRepository.createPost(newPost);
+    return mapPostDBTypeToViewType(createdPost);
   }
 
   async updatePost(
@@ -62,5 +65,34 @@ export class PostsService {
 
   async deletePost(id: string): Promise<boolean> {
     return await this.postsRepository.deletePost(id);
+  }
+
+  async updateLikeStatus(
+    postId: string,
+    user: IUserDBModel,
+    likeStatus: LikeStatus
+  ): Promise<boolean> {
+    const post = await this.postsRepository.getPostById(postId);
+    if (!post) return false;
+
+    const myStatus = getUserLikeStatusForPost(post.likesInfo, user.id);
+
+    if (!myStatus) {
+      const likeInfo = {
+        userId: user.id,
+        login: user.accountData.login,
+        likeStatus,
+        addedAt: new Date(),
+      };
+      this.postsRepository.addNewLikedUserInfo(post.id, likeInfo);
+    }
+
+    if (myStatus === likeStatus) return true;
+
+    return this.postsRepository.updateLikedUserInfo(
+      post.id,
+      user.id,
+      likeStatus
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { IPost } from "../types/IPost";
+import { IPostDBModel } from "../types/IPost";
 import { QueryParamType } from "../types/QueryParamType";
 import { PostModel } from "../models/postModel";
 import { SortOrder } from "mongoose";
@@ -8,7 +8,7 @@ type PostsWithMetaType = {
   page: number;
   pageSize: number;
   totalCount: number;
-  items: IPost[];
+  items: IPostDBModel[];
 };
 
 interface IGetPostsInput {

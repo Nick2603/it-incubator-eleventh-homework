@@ -16,6 +16,7 @@ import {
   sessionsRepository,
   usersRepository,
 } from "./composition/compositionRoot";
+import { ROUTER_PATHS } from "./RouterPaths";
 
 export const app = express();
 
@@ -39,9 +40,9 @@ app.delete("/testing/all-data", async (req: Request, res: Response) => {
   res.sendStatus(CodeResponsesEnum.No_content_204);
 });
 
-app.use("/blogs", blogsRouter);
-app.use("/posts", postsRouter);
-app.use("/users", usersRouter);
-app.use("/auth", authRouter);
-app.use("/comments", commentsRouter);
-app.use("/security/devices", devicesRouter);
+app.use(ROUTER_PATHS.blogs, blogsRouter);
+app.use(ROUTER_PATHS.posts, postsRouter);
+app.use(ROUTER_PATHS.users, usersRouter);
+app.use(ROUTER_PATHS.auth, authRouter);
+app.use(ROUTER_PATHS.comments, commentsRouter);
+app.use(ROUTER_PATHS.securityDevices, devicesRouter);

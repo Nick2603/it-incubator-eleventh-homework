@@ -1,9 +1,24 @@
 import { Schema, model } from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 import { WithId } from "mongodb";
-import { IPost } from "../types/IPost";
+import { ILikeInfo, IPostDBModel } from "../types/IPost";
+import { LikeStatus } from "../types/LikeStatusEnum";
 
-const PostSchema = new Schema<WithId<IPost>>({
+const likesInfo = new Schema<ILikeInfo>(
+  {
+    userId: { type: String, required: true },
+    login: { type: String, required: true },
+    likeStatus: {
+      type: String,
+      required: true,
+      enum: Object.values(LikeStatus),
+    },
+    addedAt: { type: Date, required: true, immutable: true },
+  },
+  { _id: false }
+);
+
+const PostSchema = new Schema<WithId<IPostDBModel>>({
   _id: {
     type: String,
     required: true,
@@ -17,6 +32,7 @@ const PostSchema = new Schema<WithId<IPost>>({
   blogId: { type: String, required: true },
   blogName: { type: String, required: true },
   createdAt: { type: String, required: true },
+  likesInfo: { type: [likesInfo], required: true },
 });
 
 PostSchema.set("toJSON", {
@@ -26,4 +42,4 @@ PostSchema.set("toJSON", {
   },
 });
 
-export const PostModel = model<IPost>("posts", PostSchema);
+export const PostModel = model<IPostDBModel>("posts", PostSchema);

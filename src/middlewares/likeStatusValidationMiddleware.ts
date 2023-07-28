@@ -1,5 +1,5 @@
 import { CustomValidator } from "express-validator";
-import { LikeStatus } from "../types/IComment";
+import { LikeStatus } from "../types/LikeStatusEnum";
 
 export const isValidLikeStatus: CustomValidator = async (likeStatus) => {
   const isValid = Object.values(LikeStatus).includes(likeStatus);
