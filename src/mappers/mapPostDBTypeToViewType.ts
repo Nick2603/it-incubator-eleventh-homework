@@ -14,9 +14,10 @@ export const getUserLikeStatusForPost = (
   return userInfo.likeStatus;
 };
 
-const getNewestLikes = (likesInfo: ILikeInfo[]): ILikeInfo[] => {
+const getNewestLikes = (likesInfo: ILikeInfo[]) => {
   return likesInfo
     .sort((a, b) => b.addedAt.getTime() - a.addedAt.getTime())
+    .map((like) => ({ addedAt: like.addedAt, userId: like.userId, login: like.login }))
     .slice(0, 3);
 };
 
